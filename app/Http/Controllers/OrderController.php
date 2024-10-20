@@ -92,7 +92,7 @@ class OrderController extends Controller
             'order_number' => $this->generateOrderNumber(),
             'total_price' => $totalPrice,
             'status' => 'pending',
-            'payment_status' => 'paid',
+            'payment_status' => $request->payment_status,
             'payment_method' => $request->payment_method,
         ];
 

@@ -9,7 +9,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form action="{{ route('orders.store') }}" method="POST">
+                    @if ($errors->any())
+                        <div class="bg-red-500 text-white p-4 rounded mb-4">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('orders.store') }}" method="POST" id="order-form">
                         @csrf
                         <div class="mb-4">
                             <label for="products" class="block text-gray-700">Products</label>
@@ -41,6 +51,14 @@
                                 class="w-full border-gray-300 rounded-md shadow-sm" required>
                                 <option value="stripe">Stripe</option>
                                 <option value="paypal">PayPal</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="payment_status" class="block text-gray-700">Payment Status</label>
+                            <select name="payment_status" id="payment_status"
+                                class="w-full border-gray-300 rounded-md shadow-sm" required>
+                                <option value="paid">Paid</option>
+                                <option value="unpaid">Unpaid</option>
                             </select>
                         </div>
                         <div class="mb-4">
