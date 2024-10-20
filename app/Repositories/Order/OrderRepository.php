@@ -53,14 +53,14 @@ class OrderRepository implements OrderRepositoryInterface
         ]);
     }
 
-    public function attachOrderItems($orderId, $products)
+    public function attachOrderItems($orderId, array $orderItems)
     {
-        foreach ($products as $productData) {
+        foreach ($orderItems as $item) {
             OrderItem::create([
                 'order_id' => $orderId,
-                'product_id' => $productData['id'],
-                'quantity' => $productData['quantity'],
-                'price' => $productData['price'],
+                'product_id' => $item['product_id'], // Corrected key
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
             ]);
         }
     }

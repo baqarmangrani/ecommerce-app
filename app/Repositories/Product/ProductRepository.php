@@ -70,10 +70,10 @@ class ProductRepository implements ProductRepositoryInterface
         $product->decrement('quantity', $quantity);
 
         InventoryLog::create([
-            'product_id' => $product->id,
+            'product_id' => $id,
             'quantity_change' => -$quantity,
-            'type' => 'sale',
-            'comments' => 'Sold ' . $quantity . ' units.',
+            'type' => 'subtraction', // Use a valid value
+            'comments' => "Sold $quantity units.",
         ]);
 
         return $product;

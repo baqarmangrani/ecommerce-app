@@ -16,18 +16,42 @@
                             <div id="products">
                                 <div class="flex items-center mb-2 product-row">
                                     <select name="products[0][product_id]"
-                                        class="mr-2 w-full border-gray-300 rounded-md shadow-sm">
+                                        class="mr-2 w-full border-gray-300 rounded-md shadow-sm product-select">
                                         <option value="">Select a product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}" data-stock="{{ $product->quantity }}">
-                                                {{ $product->name }} (Stock: {{ $product->quantity }})</option>
+                                            <option value="{{ $product->id }}" data-price="{{ $product->price }}"
+                                                data-stock="{{ $product->quantity }}">{{ $product->name }} (Stock:
+                                                {{ $product->quantity }}, Price: ${{ $product->price }})</option>
                                         @endforeach
                                     </select>
                                     <input type="number" name="products[0][quantity]" min="1"
-                                        class="ml-2 w-20 border-gray-300 rounded-md shadow-sm" placeholder="Quantity">
+                                        class="ml-2 w-20 border-gray-300 rounded-md shadow-sm quantity-input"
+                                        placeholder="Quantity">
+                                    <span class="ml-2 product-price">$0.00</span>
                                     <button type="button" class="ml-2 text-green-500 add-product">+</button>
                                 </div>
                             </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="payment_method" class="block text-gray-700">Payment Method</label>
+                            <select name="payment_method" id="payment_method"
+                                class="w-full border-gray-300 rounded-md shadow-sm">
+                                <option value="credit_card">Credit Card</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="bank_transfer">Bank Transfer</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="payment_status" class="block text-gray-700">Payment Status</label>
+                            <select name="payment_status" id="payment_status"
+                                class="w-full border-gray-300 rounded-md shadow-sm">
+                                <option value="paid">Paid</option>
+                                <option value="unpaid">Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="total_price" class="block text-gray-700">Total Price</label>
+                            <span id="total_price" class="block text-gray-900">$0.00</span>
                         </div>
                         <button type="submit"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Place
@@ -42,12 +66,25 @@
         document.addEventListener('DOMContentLoaded', function() {
             let productIndex = 1;
 
+            function updateTotalPrice() {
+                let totalPrice = 0;
+                document.querySelectorAll('.product-row').forEach(function(row) {
+                    const price = parseFloat(row.querySelector('.product-select').selectedOptions[0]
+                        .getAttribute('data-price') || 0);
+                    const quantity = parseInt(row.querySelector('.quantity-input').value || 0);
+                    totalPrice += price * quantity;
+                });
+                document.getElementById('total_price').textContent = `$${totalPrice.toFixed(2)}`;
+            }
+
             document.querySelector('.add-product').addEventListener('click', function() {
                 const productRow = document.querySelector('.product-row').cloneNode(true);
                 productRow.querySelector('select').name = `products[${productIndex}][product_id]`;
                 productRow.querySelector('input[type="number"]').name =
                     `products[${productIndex}][quantity]`;
                 productRow.querySelector('input[type="number"]').value = '';
+                productRow.querySelector('input[type="number"]').min = '1'; // Ensure min is set to 1
+                productRow.querySelector('.product-price').textContent = '$0.00';
                 productRow.querySelector('.add-product').addEventListener('click', function() {
                     productIndex++;
                     const newProductRow = productRow.cloneNode(true);
@@ -56,10 +93,25 @@
                     newProductRow.querySelector('input[type="number"]').name =
                         `products[${productIndex}][quantity]`;
                     newProductRow.querySelector('input[type="number"]').value = '';
+                    newProductRow.querySelector('input[type="number"]').min =
+                        '1'; // Ensure min is set to 1
+                    newProductRow.querySelector('.product-price').textContent = '$0.00';
                     document.getElementById('products').appendChild(newProductRow);
                 });
                 document.getElementById('products').appendChild(productRow);
                 productIndex++;
+            });
+
+            document.getElementById('products').addEventListener('change', function(event) {
+                if (event.target.classList.contains('product-select') || event.target.classList.contains(
+                        'quantity-input')) {
+                    const row = event.target.closest('.product-row');
+                    const price = parseFloat(row.querySelector('.product-select').selectedOptions[0]
+                        .getAttribute('data-price') || 0);
+                    const quantity = parseInt(row.querySelector('.quantity-input').value || 0);
+                    row.querySelector('.product-price').textContent = `$${(price * quantity).toFixed(2)}`;
+                    updateTotalPrice();
+                }
             });
         });
     </script>

@@ -33,7 +33,9 @@ class OrderController extends Controller
 
     public function create()
     {
-        $products = $this->productRepository->all();
+        $products = $this->productRepository->all()->filter(function ($product) {
+            return $product->quantity > 0;
+        });
         return view('orders.create', compact('products'));
     }
 
@@ -43,6 +45,8 @@ class OrderController extends Controller
             'products' => 'required|array',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',
+            'payment_method' => 'required|string',
+            'payment_status' => 'required|string',
         ]);
 
         $totalPrice = 0;
@@ -69,7 +73,8 @@ class OrderController extends Controller
             'order_number' => $this->generateOrderNumber(),
             'total_price' => $totalPrice,
             'status' => 'pending',
-            'payment_status' => 'unpaid',
+            'payment_status' => $request->payment_status,
+            'payment_method' => $request->payment_method,
         ];
 
         $order = $this->orderRepository->create($orderData);
@@ -77,7 +82,7 @@ class OrderController extends Controller
         $this->orderRepository->attachOrderItems($order->id, $orderItems);
 
         foreach ($orderItems as $item) {
-            $this->productRepository->decrementStock($item['product_id'], $item['quantity']);
+            $this->productRepository->reduceStock($item['product_id'], $item['quantity']);
         }
 
         // Trigger the OrderPlaced event
@@ -109,7 +114,9 @@ class OrderController extends Controller
         $request->validate([
             'products' => 'required|array',
             'products.*.product_id' => 'required|exists:products,id',
-            'products.*.quantity' => 'required|integer|min=1',
+            'products.*.quantity' => 'required|integer|min:1',
+            'payment_method' => 'required|string',
+            'payment_status' => 'required|string',
         ]);
 
         $this->orderRepository->update($id, $request->all());

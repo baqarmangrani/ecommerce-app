@@ -12,5 +12,5 @@ interface OrderRepositoryInterface
     public function update($id, array $data);
     public function delete($id);
     public function createOrder($userId, $totalPrice): Order;
-    public function attachOrderItems($orderId, $products);
+    public function attachOrderItems($orderId, array $orderItems);
 }
