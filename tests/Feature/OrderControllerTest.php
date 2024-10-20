@@ -27,6 +27,7 @@ class OrderControllerTest extends TestCase
             'products' => [
                 ['product_id' => $product->id, 'quantity' => 1],
             ],
+            'payment_method' => 'credit_card',
             'card_number' => '1234567812345678',
             'expiry_date' => '12/23',
             'cvv' => '123',

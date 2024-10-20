@@ -24,7 +24,12 @@ class ProcessOrderTest extends TestCase
         ProcessOrder::dispatch($order, $orderItems);
 
         Queue::assertPushed(ProcessOrder::class, function ($job) use ($order) {
-            return $job->order->id === $order->id;
+            $reflection = new \ReflectionClass($job);
+            $property = $reflection->getProperty('order');
+            $property->setAccessible(true);
+            $jobOrder = $property->getValue($job);
+
+            return $jobOrder->id === $order->id;
         });
     }
 }
