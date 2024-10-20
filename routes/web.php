@@ -7,8 +7,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect("/", "/products")->name('dashboard');
-
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('orders.index');
+    }
+    return view('welcome');
+})->name('welcome');
 
 // Route::resource('products', ProductController::class);
 
