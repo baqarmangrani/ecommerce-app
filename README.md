@@ -124,9 +124,23 @@ This project is an E-commerce System built using Laravel, designed to manage pro
    php -S localhost:8000 -t public
    ```
 
+### Running the Application in Docker
+
+1. **Build and run Docker containers**:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Run database migrations and seeders**:
+   ```bash
+   docker-compose exec app php artisan migrate --seed
+   ```
+
 ### Access the Application
 
-- The application will be accessible at `http://localhost:8000`.
+- The application will be accessible at `http://localhost:8000` when running locally.
+- The application will be accessible at `http://localhost:9000` when running in Docker.
 
 ### Running Tests
 
