@@ -10,9 +10,9 @@ class OrderRepository implements OrderRepositoryInterface
     public function all($paginate = null)
     {
         if ($paginate) {
-            return Order::paginate($paginate);
+            return Order::with('user')->paginate($paginate);
         }
-        return Order::all();
+        return Order::with('user')->get();
     }
 
     public function find($id)
