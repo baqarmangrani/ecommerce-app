@@ -75,4 +75,15 @@ class ProductController extends Controller
         $this->productRepository->create($data);
         return redirect()->route('products.index');
     }
+
+    public function restock(Request $request, $id)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $this->productRepository->restock($id, $request->quantity);
+
+        return redirect()->route('products.index')->with('success', 'Product restocked successfully.');
+    }
 }

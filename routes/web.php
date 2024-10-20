@@ -32,6 +32,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::resource('products', ProductController::class);
+    Route::put('/products/restock/{id}', [ProductController::class, 'restock'])->name('products.restock');
+
     Route::resource('categories', CategoryController::class);
     Route::resource('orders', OrderController::class);
     Route::resource('tags', TagController::class);

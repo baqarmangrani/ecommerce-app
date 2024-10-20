@@ -46,17 +46,20 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function restock($id, $quantity)
     {
-        $product = Product::findOrFail($id);
-        $product->increment('quantity', $quantity);
+        $product = Product::find($id);
+        if ($product) {
+            $product->increment('quantity', $quantity);
 
-        InventoryLog::create([
-            'product_id' => $product->id,
-            'quantity_change' => $quantity, // Positive value for restock
-            'type' => 'restock',
-            'comments' => 'Restocked ' . $quantity . ' units.',
-        ]);
+            InventoryLog::create([
+                'product_id' => $id,
+                'quantity_change' => $quantity,
+                'type' => 'addition',
+                'comments' => "Restocked $quantity units.",
+            ]);
 
-        return $product;
+            return $product;
+        }
+        return null;
     }
 
     public function reduceStock($id, $quantity)

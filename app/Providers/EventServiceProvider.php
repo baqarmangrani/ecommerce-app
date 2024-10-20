@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\SendLowInventoryNotification;
 use Illuminate\Support\ServiceProvider;
 use App\Events\OrderPlaced;
 use App\Listeners\SendOrderNotification;
@@ -17,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderFailed::class => [
             SendOrderFailedNotification::class,
+        ],
+        LowInventory::class => [
+            SendLowInventoryNotification::class,
         ],
     ];
 
