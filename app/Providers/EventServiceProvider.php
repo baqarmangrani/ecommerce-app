@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Events\OrderPlaced;
 use App\Listeners\SendOrderNotification;
+use App\Events\OrderFailed;
+use App\Listeners\SendOrderFailedNotification;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -13,8 +15,10 @@ class EventServiceProvider extends ServiceProvider
         OrderPlaced::class => [
             SendOrderNotification::class,
         ],
+        OrderFailed::class => [
+            SendOrderFailedNotification::class,
+        ],
     ];
-
 
     /**
      * Register services.

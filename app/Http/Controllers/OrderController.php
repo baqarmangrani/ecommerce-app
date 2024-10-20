@@ -82,7 +82,7 @@ class OrderController extends Controller
 
         ProcessOrder::dispatch($order, $orderItems);
 
-        return redirect()->route('orders.index')->with('success', 'Order placed successfully. Your order number is ' . $order->order_number);
+        return redirect()->route('orders.index')->with('success', 'Order placed successfully.  Please check your email for confirmation. Your order number is ' . $order->order_number);
     }
 
     private function generateOrderNumber()
