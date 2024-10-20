@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Auth\AuthRepository;
+use App\Repositories\Auth\AuthRepositoryInterface;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Category\CategoryRepositoryInterface;
 use App\Repositories\Discount\DiscountRepository;
@@ -44,6 +46,8 @@ class AppServiceProvider extends ServiceProvider
             }
             return new StripePaymentService();
         });
+
+        $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
     }
 
     public function boot(): void
