@@ -2,21 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderPlaced;
 use App\Repositories\Order\OrderRepositoryInterface;
+use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
     protected $orderRepository;
     protected $userRepository;
+    protected $productRepository;
 
     public function __construct(
         OrderRepositoryInterface $orderRepository,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        ProductRepositoryInterface $productRepository
     ) {
         $this->orderRepository = $orderRepository;
         $this->userRepository = $userRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function index()
@@ -27,18 +33,62 @@ class OrderController extends Controller
 
     public function create()
     {
-        return view('orders.create');
+        $products = $this->productRepository->all();
+        return view('orders.create', compact('products'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            // Validation rules
+            'products' => 'required|array',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
         ]);
 
-        $this->orderRepository->create($request->all());
+        $totalPrice = 0;
+        $orderItems = [];
 
-        return redirect()->route('orders.index')->with('success', 'Order created successfully.');
+        foreach ($request->products as $productData) {
+            $product = $this->productRepository->find($productData['product_id']);
+
+            if ($product->quantity < $productData['quantity']) {
+                return back()->withErrors(['quantity' => 'The selected quantity exceeds available stock for product ID ' . $productData['product_id']]);
+            }
+
+            $totalPrice += $product->price * $productData['quantity'];
+
+            $orderItems[] = [
+                'product_id' => $product->id,
+                'quantity' => $productData['quantity'],
+                'price' => $product->price,
+            ];
+        }
+
+        $orderData = [
+            'user_id' => Auth::id(),
+            'order_number' => $this->generateOrderNumber(),
+            'total_price' => $totalPrice,
+            'status' => 'pending',
+            'payment_status' => 'unpaid',
+        ];
+
+        $order = $this->orderRepository->create($orderData);
+
+        $this->orderRepository->attachOrderItems($order->id, $orderItems);
+
+        foreach ($orderItems as $item) {
+            $this->productRepository->decrementStock($item['product_id'], $item['quantity']);
+        }
+
+        // Trigger the OrderPlaced event
+        event(new OrderPlaced($order));
+
+        return redirect()->route('orders.index')->with('success', 'Order placed successfully.');
+    }
+
+    private function generateOrderNumber()
+    {
+        return 'ORD-' . strtoupper(uniqid());
     }
 
     public function show($id)
@@ -57,7 +107,9 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            // Validation rules
+            'products' => 'required|array',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min=1',
         ]);
 
         $this->orderRepository->update($id, $request->all());
