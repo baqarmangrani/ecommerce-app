@@ -16,7 +16,8 @@ class Order extends Model
         'order_number',
         'status',
         'payment_status',
-        'payment_method'
+        'payment_method',
+        'discount_id'
     ];
 
     public function orderItems()
@@ -32,5 +33,10 @@ class Order extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function discount()
+    {
+        return $this->belongsTo(Discount::class);
     }
 }

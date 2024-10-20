@@ -71,9 +71,41 @@
                                 </option>
                             </select>
                         </div>
+                        <div class="mb-4">
+                            <label for="discount_id" class="block text-gray-700">Discount</label>
+                            <select name="discount_id" id="discount_id"
+                                class="w-full border-gray-300 rounded-md shadow-sm">
+                                <option value="">No Discount</option>
+                                @foreach ($discounts as $discount)
+                                    <option value="{{ $discount->id }}"
+                                        {{ $order->discount_id == $discount->id ? 'selected' : '' }}>
+                                        {{ $discount->discount_code }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <button type="submit"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Update</button>
                     </form>
+
+                    <h3 class="text-lg font-semibold mt-6 mb-4">Order Items</h3>
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b">Product</th>
+                                <th class="py-2 px-4 border-b">Quantity</th>
+                                <th class="py-2 px-4 border-b">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($order->orderItems as $item)
+                                <tr>
+                                    <td class="py-2 px-4 border-b">{{ $item->product->name }}</td>
+                                    <td class="py-2 px-4 border-b">{{ $item->quantity }}</td>
+                                    <td class="py-2 px-4 border-b">{{ $item->price }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
