@@ -15,8 +15,8 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word,
-            'description' => $this->faker->sentence,
+            'name' => $this->faker->realText(20),
+            'description' => $this->faker->realText(100),
             'price' => $this->faker->randomFloat(2, 1, 100),
             'category_id' => \App\Models\Category::factory(),
         ];

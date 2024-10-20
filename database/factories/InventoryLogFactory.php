@@ -19,7 +19,7 @@ class InventoryLogFactory extends Factory
             'product_id' => Product::factory(),
             'quantity_change' => $this->faker->numberBetween(-100, 100),
             'type' => $this->faker->randomElement(['addition', 'subtraction']),
-            'comments' => $this->faker->sentence,
+            'comments' => $this->faker->realText(100),
         ];
     }
 }
