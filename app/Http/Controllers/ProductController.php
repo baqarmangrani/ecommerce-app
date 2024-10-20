@@ -46,13 +46,7 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'price' => 'required|numeric',
-            'quantity' => 'required|integer',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        $this->validateProduct($request);
 
         $this->productRepository->update($id, $request->all());
 
@@ -68,13 +62,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:100',
-            'description' => 'required|string',
-            'price' => 'required|numeric',
-            'quantity' => 'required|integer',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        $this->validateProduct($request);
 
         $this->productRepository->create($request->all());
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
@@ -82,12 +70,28 @@ class ProductController extends Controller
 
     public function restock(Request $request, $id)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
+        $this->validateRestock($request);
 
         $this->productRepository->restock($id, $request->quantity);
 
         return redirect()->route('products.index')->with('success', 'Product restocked successfully.');
+    }
+
+    private function validateProduct(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'quantity' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+    }
+
+    private function validateRestock(Request $request)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
     }
 }
