@@ -75,7 +75,6 @@ class ProductControllerTest extends TestCase
     }
 
     /** @test */
-    /** @test */
     public function it_can_restock_a_product_through_the_controller()
     {
         $product = Product::factory()->create(['quantity' => 10]); // Create a product with initial quantity
