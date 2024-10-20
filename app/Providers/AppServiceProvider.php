@@ -18,6 +18,7 @@ use App\Repositories\Tag\TagRepository;
 use App\Repositories\Tag\TagRepositoryInterface;
 use App\Repositories\User\UserRepository;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\Payment\PaymentServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -33,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
         $this->app->bind(InventoryLogRepositoryInterface::class, InventoryLogRepository::class);
         $this->app->bind(TagRepositoryInterface::class, TagRepository::class);
+
+        $this->app->bind(PaymentServiceInterface::class, \App\Services\Payment\StripePaymentService::class);
+
     }
 
     public function boot(): void

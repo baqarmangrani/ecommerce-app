@@ -7,6 +7,7 @@ use App\Jobs\ProcessOrder;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\Payment\PaymentServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,15 +16,19 @@ class OrderController extends Controller
     protected $orderRepository;
     protected $userRepository;
     protected $productRepository;
+    protected $paymentService;
 
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         UserRepositoryInterface $userRepository,
-        ProductRepositoryInterface $productRepository
+        ProductRepositoryInterface $productRepository,
+        PaymentServiceInterface $paymentService
     ) {
         $this->orderRepository = $orderRepository;
         $this->userRepository = $userRepository;
         $this->productRepository = $productRepository;
+        $this->paymentService = $paymentService;
+
     }
 
     public function index()
@@ -48,6 +53,9 @@ class OrderController extends Controller
             'products.*.quantity' => 'required|integer|min:1',
             'payment_method' => 'required|string',
             'payment_status' => 'required|string',
+            'card_number' => 'required|string',
+            'expiry_date' => 'required|string',
+            'cvv' => 'required|string',
         ]);
 
         $totalPrice = 0;
@@ -69,6 +77,16 @@ class OrderController extends Controller
             ];
         }
 
+        $paymentDetails = [
+            'card_number' => $request->card_number,
+            'expiry_date' => $request->expiry_date,
+            'cvv' => $request->cvv,
+        ];
+
+        if (!$this->paymentService->processPayment($paymentDetails)) {
+            return back()->withErrors(['payment' => 'Payment processing failed. Please check your card details and try again.']);
+        }
+
         $orderData = [
             'user_id' => Auth::id(),
             'order_number' => $this->generateOrderNumber(),
@@ -82,7 +100,7 @@ class OrderController extends Controller
 
         ProcessOrder::dispatch($order, $orderItems);
 
-        return redirect()->route('orders.index')->with('success', 'Order placed successfully.  Please check your email for confirmation. Your order number is ' . $order->order_number);
+        return redirect()->route('orders.index')->with('success', 'Order placed successfully. Please check your email for confirmation. Your order number is ' . $order->order_number);
     }
 
     private function generateOrderNumber()

@@ -53,6 +53,21 @@
                             </select>
                         </div>
                         <div class="mb-4">
+                            <label for="card_number" class="block text-gray-700">Card Number</label>
+                            <input type="text" name="card_number" id="card_number"
+                                class="w-full border-gray-300 rounded-md shadow-sm" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="expiry_date" class="block text-gray-700">Expiry Date</label>
+                            <input type="text" name="expiry_date" id="expiry_date"
+                                class="w-full border-gray-300 rounded-md shadow-sm" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="cvv" class="block text-gray-700">CVV</label>
+                            <input type="text" name="cvv" id="cvv"
+                                class="w-full border-gray-300 rounded-md shadow-sm" required>
+                        </div>
+                        <div class="mb-4">
                             <label for="total_price" class="block text-gray-700">Total Price</label>
                             <span id="total_price" class="block text-gray-900">$0.00</span>
                         </div>
