@@ -25,7 +25,8 @@
                                         @endforeach
                                     </select>
                                     <select name="products[0][quantity]"
-                                        class="ml-2 w-20 border-gray-300 rounded-md shadow-sm quantity-select" disabled>
+                                        class="ml-2 w-20 border-gray-300 rounded-md shadow-sm quantity-select" disabled
+                                        required>
                                         <option value="">Quantity</option>
                                     </select>
                                     <span class="ml-2 product-price">$0.00</span>
