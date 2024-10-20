@@ -24,9 +24,10 @@
                                                 {{ $product->quantity }}, Price: ${{ $product->price }})</option>
                                         @endforeach
                                     </select>
-                                    <input type="number" name="products[0][quantity]" min="1"
-                                        class="ml-2 w-20 border-gray-300 rounded-md shadow-sm quantity-input"
-                                        placeholder="Quantity">
+                                    <select name="products[0][quantity]"
+                                        class="ml-2 w-20 border-gray-300 rounded-md shadow-sm quantity-select" disabled>
+                                        <option value="">Quantity</option>
+                                    </select>
                                     <span class="ml-2 product-price">$0.00</span>
                                     <button type="button" class="ml-2 text-green-500 add-product">+</button>
                                 </div>
@@ -71,30 +72,37 @@
                 document.querySelectorAll('.product-row').forEach(function(row) {
                     const price = parseFloat(row.querySelector('.product-select').selectedOptions[0]
                         .getAttribute('data-price') || 0);
-                    const quantity = parseInt(row.querySelector('.quantity-input').value || 0);
+                    const quantity = parseInt(row.querySelector('.quantity-select').value || 0);
                     totalPrice += price * quantity;
                 });
                 document.getElementById('total_price').textContent = `$${totalPrice.toFixed(2)}`;
             }
 
+            function populateQuantityOptions(selectElement, maxQuantity) {
+                selectElement.innerHTML = '<option value="">Quantity</option>';
+                for (let i = 1; i <= maxQuantity; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    selectElement.appendChild(option);
+                }
+            }
+
             document.querySelector('.add-product').addEventListener('click', function() {
                 const productRow = document.querySelector('.product-row').cloneNode(true);
-                productRow.querySelector('select').name = `products[${productIndex}][product_id]`;
-                productRow.querySelector('input[type="number"]').name =
-                    `products[${productIndex}][quantity]`;
-                productRow.querySelector('input[type="number"]').value = '';
-                productRow.querySelector('input[type="number"]').min = '1'; // Ensure min is set to 1
+                productRow.querySelector('select[name^="products"]').name =
+                    `products[${productIndex}][product_id]`;
+                productRow.querySelector('.quantity-select').name = `products[${productIndex}][quantity]`;
+                productRow.querySelector('.quantity-select').disabled = true;
                 productRow.querySelector('.product-price').textContent = '$0.00';
                 productRow.querySelector('.add-product').addEventListener('click', function() {
                     productIndex++;
                     const newProductRow = productRow.cloneNode(true);
-                    newProductRow.querySelector('select').name =
+                    newProductRow.querySelector('select[name^="products"]').name =
                         `products[${productIndex}][product_id]`;
-                    newProductRow.querySelector('input[type="number"]').name =
+                    newProductRow.querySelector('.quantity-select').name =
                         `products[${productIndex}][quantity]`;
-                    newProductRow.querySelector('input[type="number"]').value = '';
-                    newProductRow.querySelector('input[type="number"]').min =
-                        '1'; // Ensure min is set to 1
+                    newProductRow.querySelector('.quantity-select').disabled = true;
                     newProductRow.querySelector('.product-price').textContent = '$0.00';
                     document.getElementById('products').appendChild(newProductRow);
                 });
@@ -103,12 +111,22 @@
             });
 
             document.getElementById('products').addEventListener('change', function(event) {
-                if (event.target.classList.contains('product-select') || event.target.classList.contains(
-                        'quantity-input')) {
+                if (event.target.classList.contains('product-select')) {
+                    const row = event.target.closest('.product-row');
+                    const price = parseFloat(event.target.selectedOptions[0].getAttribute('data-price') ||
+                        0);
+                    const stock = parseInt(event.target.selectedOptions[0].getAttribute('data-stock') || 0);
+                    const quantitySelect = row.querySelector('.quantity-select');
+                    populateQuantityOptions(quantitySelect, stock);
+                    quantitySelect.disabled = false;
+                    row.querySelector('.product-price').textContent =
+                        `$${(price * (quantitySelect.value || 0)).toFixed(2)}`;
+                    updateTotalPrice();
+                } else if (event.target.classList.contains('quantity-select')) {
                     const row = event.target.closest('.product-row');
                     const price = parseFloat(row.querySelector('.product-select').selectedOptions[0]
                         .getAttribute('data-price') || 0);
-                    const quantity = parseInt(row.querySelector('.quantity-input').value || 0);
+                    const quantity = parseInt(event.target.value || 0);
                     row.querySelector('.product-price').textContent = `$${(price * quantity).toFixed(2)}`;
                     updateTotalPrice();
                 }
