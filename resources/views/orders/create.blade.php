@@ -19,7 +19,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('orders.store') }}" method="POST">
+                    <form id="order-form" action="{{ route('orders.store') }}" method="POST">
                         @csrf
                         <div class="mb-4">
                             <label for="products" class="block text-gray-700">Products</label>
@@ -67,7 +67,7 @@
                                 class="w-full border-gray-300 rounded-md shadow-sm" required>
                         </div>
                         <div class="mb-4">
-                            <label for="expiry_date" class="block text-gray-700">Expiry Date</label>
+                            <label for="expiry_date" class="block text-gray-700">Expiry Date (MM/YY)</label>
                             <input type="text" name="expiry_date" id="expiry_date"
                                 class="w-full border-gray-300 rounded-md shadow-sm" required>
                         </div>
@@ -155,6 +155,34 @@
                     const quantity = parseInt(event.target.value || 0);
                     row.querySelector('.product-price').textContent = `$${(price * quantity).toFixed(2)}`;
                     updateTotalPrice();
+                }
+            });
+
+            document.getElementById('order-form').addEventListener('submit', function(event) {
+                const cardNumber = document.getElementById('card_number').value;
+                const expiryDate = document.getElementById('expiry_date').value;
+                const cvv = document.getElementById('cvv').value;
+
+                const cardNumberPattern = /^\d{16}$/;
+                const expiryDatePattern = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                const cvvPattern = /^\d{3,4}$/;
+
+                if (!cardNumberPattern.test(cardNumber)) {
+                    alert('Invalid card number. Please enter a 16-digit card number.');
+                    event.preventDefault();
+                    return;
+                }
+
+                if (!expiryDatePattern.test(expiryDate)) {
+                    alert('Invalid expiry date. Please enter the expiry date in MM/YY format.');
+                    event.preventDefault();
+                    return;
+                }
+
+                if (!cvvPattern.test(cvv)) {
+                    alert('Invalid CVV. Please enter a 3 or 4-digit CVV.');
+                    event.preventDefault();
+                    return;
                 }
             });
         });

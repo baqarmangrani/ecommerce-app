@@ -53,9 +53,9 @@ class OrderController extends Controller
             'products.*.quantity' => 'required|integer|min:1',
             'payment_method' => 'required|string',
             'payment_status' => 'required|string',
-            'card_number' => 'required|string',
-            'expiry_date' => 'required|string',
-            'cvv' => 'required|string',
+            'card_number' => ['required', 'string', 'regex:/^\d{16}$/'],
+            'expiry_date' => ['required', 'string', 'regex:/^(0[1-9]|1[0-2])\/\d{2}$/'],
+            'cvv' => ['required', 'string', 'regex:/^\d{3,4}$/'],
         ]);
 
         $totalPrice = 0;
