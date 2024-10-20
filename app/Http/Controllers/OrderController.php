@@ -68,12 +68,23 @@ class OrderController extends Controller
                 return back()->withErrors(['quantity' => 'The selected quantity exceeds available stock for product ID ' . $productData['product_id']]);
             }
 
-            $totalPrice += $product->price * $productData['quantity'];
+            $productPrice = $product->price;
+
+            if ($request->has('discount')) {
+                $discount = $request->discount;
+                if ($discount->type == 'percentage') {
+                    $productPrice -= ($productPrice * ($discount->value / 100));
+                } else {
+                    $productPrice -= $discount->value;
+                }
+            }
+
+            $totalPrice += $productPrice * $productData['quantity'];
 
             $orderItems[] = [
                 'product_id' => $product->id,
                 'quantity' => $productData['quantity'],
-                'price' => $product->price,
+                'price' => $productPrice,
             ];
         }
 

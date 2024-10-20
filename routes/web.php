@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/products/restock/{id}', [ProductController::class, 'restock'])->name('products.restock');
 
     Route::resource('categories', CategoryController::class);
-    Route::resource('orders', OrderController::class);
+    Route::resource('orders', OrderController::class)->middleware('apply.discounts');
     Route::resource('tags', TagController::class);
 });
 

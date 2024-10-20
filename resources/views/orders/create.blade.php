@@ -46,6 +46,11 @@
                             </div>
                         </div>
                         <div class="mb-4">
+                            <label for="discount_code" class="block text-gray-700">Discount Code</label>
+                            <input type="text" name="discount_code" id="discount_code"
+                                class="w-full border-gray-300 rounded-md shadow-sm">
+                        </div>
+                        <div class="mb-4">
                             <label for="payment_method" class="block text-gray-700">Payment Method</label>
                             <select name="payment_method" id="payment_method"
                                 class="w-full border-gray-300 rounded-md shadow-sm" required>
