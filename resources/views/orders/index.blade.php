@@ -36,7 +36,7 @@
                                     <td class="py-2 px-4 border-b">{{ $order->id }}</td>
                                     <td class="py-2 px-4 border-b">{{ $order->order_number }}</td>
                                     <td class="py-2 px-4 border-b">{{ $order->user->name ?? 'N/A' }}</td>
-                                    <td class="py-2 px-4 border-b">{{ $order->total_price }}</td>
+                                    <td class="py-2 px-4 border-b">${{ number_format($order->total_price, 2) }}</td>
                                     <td class="py-2 px-4 border-b">{{ $order->status }}</td>
                                     <td class="py-2 px-4 border-b">
                                         <a href="{{ route('orders.show', $order->id) }}"
