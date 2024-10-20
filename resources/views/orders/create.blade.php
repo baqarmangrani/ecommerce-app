@@ -59,14 +59,6 @@
                             </select>
                         </div>
                         <div class="mb-4">
-                            <label for="payment_status" class="block text-gray-700">Payment Status</label>
-                            <select name="payment_status" id="payment_status"
-                                class="w-full border-gray-300 rounded-md shadow-sm" required>
-                                <option value="paid">Paid</option>
-                                <option value="unpaid">Unpaid</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
                             <label for="card_number" class="block text-gray-700">Card Number</label>
                             <input type="text" name="card_number" id="card_number"
                                 class="w-full border-gray-300 rounded-md shadow-sm" required>

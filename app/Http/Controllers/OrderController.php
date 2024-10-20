@@ -52,7 +52,6 @@ class OrderController extends Controller
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',
             'payment_method' => 'required|string',
-            'payment_status' => 'required|string',
             'card_number' => ['required', 'string', 'regex:/^\d{16}$/'],
             'expiry_date' => ['required', 'string', 'regex:/^(0[1-9]|1[0-2])\/\d{2}$/'],
             'cvv' => ['required', 'string', 'regex:/^\d{3,4}$/'],
@@ -104,7 +103,7 @@ class OrderController extends Controller
             'order_number' => $this->generateOrderNumber(),
             'total_price' => $totalPrice,
             'status' => 'pending',
-            'payment_status' => $request->payment_status,
+            'payment_status' => 'paid',
             'payment_method' => $request->payment_method,
         ];
 
@@ -140,7 +139,6 @@ class OrderController extends Controller
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',
             'payment_method' => 'required|string',
-            'payment_status' => 'required|string',
         ]);
 
         $this->orderRepository->update($id, $request->all());
