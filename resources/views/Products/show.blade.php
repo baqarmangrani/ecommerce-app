@@ -13,7 +13,9 @@
                     <p><strong>Description:</strong> {{ $product->description }}</p>
                     <p><strong>Price:</strong> {{ $product->price }}</p>
                     <p><strong>Category:</strong> {{ $product->category->name }}</p>
-                    <a href="{{ route('products.index') }}" class="btn btn-secondary mt-4">Back to Products</a>
+                    <a href="{{ route('products.index') }}"
+                        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block">Back
+                        to Products</a>
                 </div>
             </div>
         </div>
