@@ -40,7 +40,7 @@ class ProcessOrder implements ShouldQueue
         $orderRepository->attachOrderItems($order->id, $orderItems);
 
         foreach ($orderItems as $item) {
-            $productRepository->decrementStock($item['product_id'], $item['quantity']);
+            $productRepository->reduceStock($item['product_id'], $item['quantity']);
         }
 
         event(new OrderPlaced($order));
