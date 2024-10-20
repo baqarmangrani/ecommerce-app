@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\OrderRepositoryInterface;
+use App\Repositories\Order\OrderRepositoryInterface;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller

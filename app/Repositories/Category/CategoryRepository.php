@@ -6,8 +6,11 @@ use App\Models\Category;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
-    public function all()
+    public function all($paginate = null)
     {
+        if ($paginate) {
+            return Category::paginate($paginate);
+        }
         return Category::all();
     }
 
