@@ -72,6 +72,7 @@ class OrderController extends Controller
 
             if ($request->has('discount')) {
                 $discount = $request->discount;
+                dd($discount);
                 if ($discount->type == 'percentage') {
                     $productPrice -= ($productPrice * ($discount->value / 100));
                 } else {
