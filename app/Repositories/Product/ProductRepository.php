@@ -7,8 +7,11 @@ use App\Models\Product;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function all()
+    public function all($paginate = null)
     {
+        if ($paginate) {
+            return Product::paginate($paginate);
+        }
         return Product::all();
     }
 
