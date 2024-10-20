@@ -2,13 +2,11 @@
 
 namespace App\Repositories\Tag;
 
-use App\Models\Tag;
-
 interface TagRepositoryInterface
 {
-    public function all();
-    public function find($id): ?Tag;
-    public function create(array $data): Tag;
-    public function update(Tag $tag, array $data): Tag;
-    public function delete(Tag $tag): bool;
+    public function all($paginate = null);
+    public function find($id);
+    public function create(array $data);
+    public function update($id, array $data);
+    public function delete($id);
 }
