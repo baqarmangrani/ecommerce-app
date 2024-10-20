@@ -1,57 +1,94 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-uses(RefreshDatabase::class);
+class ProductControllerTest extends TestCase
+{
+    use RefreshDatabase;
 
-it('can list products', function () {
-    Product::factory()->count(5)->create();
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+        Category::factory()->create(['id' => 1, 'name' => 'Test Category']); // Ensure a category exists
+    }
 
-    $response = $this->get(route('products.index'));
+    /** @test */
+    public function it_can_create_a_product_through_the_controller()
+    {
+        $response = $this->post(route('products.store'), [
+            'name' => 'New Product',
+            'description' => 'Test description',
+            'price' => 100,
+            'quantity' => 10,
+            'category_id' => 1,
+        ]);
 
-    $response->assertStatus(200);
-    $response->assertViewHas('paginatedProducts');
-});
+        $response->assertRedirect(route('products.index'));
+        $this->assertDatabaseHas('products', ['name' => 'New Product']);
+    }
 
-it('can create a product', function () {
-    $category = Category::factory()->create();
-    $data = [
-        'name' => 'Test Product',
-        'description' => 'Test Description',
-        'price' => 100,
-        'quantity' => 10,
-        'category_id' => $category->id,
-    ];
+    /** @test */
+    public function it_can_retrieve_a_product_through_the_controller()
+    {
+        $product = Product::factory()->create();
 
-    $response = $this->post(route('products.store'), $data);
+        $response = $this->get(route('products.show', $product->id));
 
-    $response->assertRedirect(route('products.index'));
-    $this->assertDatabaseHas('products', ['name' => 'Test Product']);
-});
+        $response->assertStatus(200);
+        $response->assertViewHas('product', $product);
+    }
 
-it('can update a product', function () {
-    $product = Product::factory()->create();
-    $data = [
-        'name' => 'Updated Product',
-        'description' => 'Updated Description',
-        'price' => 150,
-        'quantity' => 20,
-        'category_id' => $product->category_id,
-    ];
+    /** @test */
+    public function it_can_update_a_product_through_the_controller()
+    {
+        $product = Product::factory()->create();
 
-    $response = $this->put(route('products.update', $product->id), $data);
+        $response = $this->put(route('products.update', $product->id), [
+            'name' => 'Updated Product',
+            'description' => 'Updated description',
+            'price' => 150,
+            'quantity' => 20,
+            'category_id' => 1,
+        ]);
 
-    $response->assertRedirect(route('products.index'));
-    $this->assertDatabaseHas('products', ['name' => 'Updated Product']);
-});
+        $response->assertRedirect(route('products.index'));
+        $this->assertDatabaseHas('products', ['name' => 'Updated Product']);
+    }
 
-it('can delete a product', function () {
-    $product = Product::factory()->create();
+    /** @test */
+    public function it_can_delete_a_product_through_the_controller()
+    {
+        $product = Product::factory()->create();
 
-    $response = $this->delete(route('products.destroy', $product->id));
+        $response = $this->delete(route('products.destroy', $product->id));
 
-    $response->assertRedirect(route('products.index'));
-    $this->assertDatabaseMissing('products', ['id' => $product->id]);
-});
+        $response->assertRedirect(route('products.index'));
+        $this->assertDatabaseMissing('products', ['id' => $product->id]);
+    }
+
+    /** @test */
+    /** @test */
+    public function it_can_restock_a_product_through_the_controller()
+    {
+        $product = Product::factory()->create(['quantity' => 10]); // Create a product with initial quantity
+
+        $response = $this->put(route('products.restock', $product->id), [ // Change to PUT method
+            'quantity' => 10, // Restock with 10 units
+        ]);
+
+        $response->assertRedirect(route('products.index')); // Check for redirect
+        $this->assertDatabaseHas('products', ['id' => $product->id, 'quantity' => 20]); // Check new quantity
+        $this->assertDatabaseHas('inventory_logs', [
+            'product_id' => $product->id,
+            'quantity_change' => 10,
+        ]); // Check if inventory log exists
+    }
+}
