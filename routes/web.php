@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('orders.index');
+        return redirect()->route('products.index');
     }
     return view('welcome');
 })->name('welcome');
