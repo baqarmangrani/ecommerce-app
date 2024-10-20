@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\OrderPlaced;
+use App\Jobs\ProcessOrder;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
@@ -79,14 +80,7 @@ class OrderController extends Controller
 
         $order = $this->orderRepository->create($orderData);
 
-        $this->orderRepository->attachOrderItems($order->id, $orderItems);
-
-        foreach ($orderItems as $item) {
-            $this->productRepository->reduceStock($item['product_id'], $item['quantity']);
-        }
-
-        // Trigger the OrderPlaced event
-        event(new OrderPlaced($order));
+        ProcessOrder::dispatch($order, $orderItems);
 
         return redirect()->route('orders.index')->with('success', 'Order placed successfully.');
     }
