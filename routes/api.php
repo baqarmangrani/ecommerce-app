@@ -15,5 +15,5 @@ Route::middleware(['auth:sanctum', 'throttle:10,1'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'throttle:10,1'])->group(function () {
-    Route::post('/inventory/restock/{id}', [InventoryController::class, 'restock']);
+    Route::post('/inventory/restock/{id}', [InventoryController::class, 'restock'])->name('inventory.restock');
 });

@@ -21,7 +21,11 @@ class InventoryController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $this->productRepository->restock($id, $request->quantity);
+        $product = $this->productRepository->restock($id, $request->quantity);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
 
         return response()->json(['success' => 'Product restocked successfully.'], 200);
     }

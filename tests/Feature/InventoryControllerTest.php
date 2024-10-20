@@ -24,7 +24,7 @@ class InventoryControllerTest extends TestCase
     /** @test */
     public function it_can_restock_a_product_with_valid_quantity()
     {
-        $response = $this->putJson(route('products.restock', $this->product->id), [
+        $response = $this->postJson(route('inventory.restock', $this->product->id), [
             'quantity' => 5,
         ]);
 
@@ -41,7 +41,7 @@ class InventoryControllerTest extends TestCase
     /** @test */
     public function it_fails_to_restock_with_invalid_quantity()
     {
-        $response = $this->putJson(route('products.restock', $this->product->id), [
+        $response = $this->postJson(route('inventory.restock', $this->product->id), [
             'quantity' => -5,
         ]);
 
@@ -52,7 +52,7 @@ class InventoryControllerTest extends TestCase
     /** @test */
     public function it_fails_to_restock_a_non_existent_product()
     {
-        $response = $this->putJson(route('products.restock', 9999), [
+        $response = $this->postJson(route('inventory.restock', 9999), [
             'quantity' => 5,
         ]);
 
@@ -62,7 +62,7 @@ class InventoryControllerTest extends TestCase
     /** @test */
     public function it_creates_inventory_log_on_restock()
     {
-        $this->putJson(route('products.restock', $this->product->id), [
+        $this->postJson(route('inventory.restock', $this->product->id), [
             'quantity' => 5,
         ]);
 

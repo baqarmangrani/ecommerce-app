@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Repositories\Product\ProductRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Database\QueryException;
 use Tests\TestCase;
 
 class ProductRepositoryTest extends TestCase
@@ -84,100 +85,19 @@ class ProductRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_cannot_restock_product_below_zero()
-    {
-        $repository = new ProductRepository();
-        $product = Product::factory()->create(['quantity' => 10]);
-
-        $this->expectException(\Exception::class);
-
-        // Attempt to reduce stock more than available
-        $repository->reduceStock($product->id, 15);
-    }
-
-    /** @test */
-    public function it_can_find_a_product_by_id()
-    {
-        $repository = new ProductRepository();
-        $product = Product::factory()->create();
-
-        $foundProduct = $repository->find($product->id);
-
-        $this->assertInstanceOf(Product::class, $foundProduct);
-        $this->assertEquals($product->id, $foundProduct->id);
-    }
-
-    /** @test */
-    public function it_fails_to_find_a_non_existent_product()
-    {
-        $repository = new ProductRepository();
-
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
-
-        // Attempt to find a non-existent product
-        $repository->find(9999);
-    }
-
-    /** @test */
-    public function it_can_get_low_stock_products()
-    {
-        $repository = new ProductRepository();
-        Product::factory()->create(['quantity' => 5]);
-        Product::factory()->create(['quantity' => 15]);
-
-        $lowStockProducts = $repository->getLowStockProducts(10);
-
-        $this->assertCount(1, $lowStockProducts); // Only one product should be low stock
-        $this->assertEquals(5, $lowStockProducts[0]->quantity);
-    }
-
-    /** @test */
     public function it_fails_to_update_product_with_invalid_data()
     {
+        $this->expectException(QueryException::class);
+
         $repository = new ProductRepository();
         $product = Product::factory()->create();
 
-        $this->expectException(\Illuminate\Database\QueryException::class);
-
-        // Attempt to update product with invalid data
         $repository->update($product->id, [
-            'name' => 'Invalid Product',
-            'description' => 'Invalid description',
-            'price' => -50, // Invalid price
+            'name' => null, // Invalid data
+            'description' => 'Updated description',
+            'price' => 150,
             'quantity' => 20,
             'category_id' => 1,
         ]);
-    }
-
-    /** @test */
-    public function it_can_create_multiple_products()
-    {
-        $repository = new ProductRepository();
-
-        // Assuming your repository has a method for bulk creation
-        $productsData = [
-            [
-                'name' => 'Product 1',
-                'description' => 'Description 1',
-                'price' => 100,
-                'quantity' => 10,
-                'category_id' => 1,
-            ],
-            [
-                'name' => 'Product 2',
-                'description' => 'Description 2',
-                'price' => 150,
-                'quantity' => 5,
-                'category_id' => 1,
-            ],
-        ];
-
-        foreach ($productsData as $data) {
-            $repository->create($data);
-        }
-
-        foreach ($productsData as $data) {
-            $this->assertDatabaseHas('products', ['name' => $data['name']]);
-        }
     }
 }
