@@ -19,6 +19,8 @@ use App\Repositories\Tag\TagRepositoryInterface;
 use App\Repositories\User\UserRepository;
 use App\Repositories\User\UserRepositoryInterface;
 use App\Services\Payment\PaymentServiceInterface;
+use App\Services\Payment\PayPalPaymentService;
+use App\Services\Payment\StripePaymentService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,8 +37,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(InventoryLogRepositoryInterface::class, InventoryLogRepository::class);
         $this->app->bind(TagRepositoryInterface::class, TagRepository::class);
 
-        $this->app->bind(PaymentServiceInterface::class, \App\Services\Payment\StripePaymentService::class);
-
+        $this->app->bind(PaymentServiceInterface::class, function ($app) {
+            $paymentMethod = request()->input('payment_method');
+            if ($paymentMethod === 'paypal') {
+                return new PayPalPaymentService();
+            }
+            return new StripePaymentService();
+        });
     }
 
     public function boot(): void

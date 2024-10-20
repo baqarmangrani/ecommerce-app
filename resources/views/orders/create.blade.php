@@ -39,17 +39,8 @@
                             <label for="payment_method" class="block text-gray-700">Payment Method</label>
                             <select name="payment_method" id="payment_method"
                                 class="w-full border-gray-300 rounded-md shadow-sm" required>
-                                <option value="credit_card">Credit Card</option>
+                                <option value="stripe">Stripe</option>
                                 <option value="paypal">PayPal</option>
-                                <option value="bank_transfer">Bank Transfer</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="payment_status" class="block text-gray-700">Payment Status</label>
-                            <select name="payment_status" id="payment_status"
-                                class="w-full border-gray-300 rounded-md shadow-sm" required>
-                                <option value="paid">Paid</option>
-                                <option value="unpaid">Unpaid</option>
                             </select>
                         </div>
                         <div class="mb-4">
