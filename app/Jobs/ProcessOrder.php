@@ -40,7 +40,7 @@ class ProcessOrder implements ShouldQueue
 
             event(new OrderPlaced($order));
         } catch (\Exception $e) {
-            // Trigger the OrderFailed event
+
             event(new OrderFailed($order, $e));
         }
     }

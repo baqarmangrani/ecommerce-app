@@ -69,7 +69,7 @@ class ProductRepository implements ProductRepositoryInterface
         InventoryLog::create([
             'product_id' => $id,
             'quantity_change' => -$quantity,
-            'type' => 'subtraction', // Use a valid value
+            'type' => 'subtraction',
             'comments' => "Sold $quantity units.",
         ]);
 
@@ -80,17 +80,17 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $query = Product::query();
 
-        // Filtering
+
         if ($request && $request->has('category_id')) {
             $query->where('category_id', $request->input('category_id'));
         }
 
-        // Searching
+
         if ($request && $request->has('search')) {
             $query->where('name', 'like', '%' . $request->input('search') . '%');
         }
 
-        // Pagination
+
         if ($paginate) {
             return $query->paginate($paginate);
         }

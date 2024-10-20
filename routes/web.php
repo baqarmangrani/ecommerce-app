@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/test-email', function () {
-    $order = Order::first(); // Assuming you have at least one order in the database
+    $order = Order::first();
     Mail::to('recipient@example.com')->send(new OrderPlacedMail($order));
     return 'Email sent!';
 });

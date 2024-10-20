@@ -24,6 +24,6 @@ class SendLowInventoryNotification
      */
     public function handle(LowInventory $event)
     {
-        Mail::to($event->order->user->email)->send(new LowInventoryMail($event->product));
+        Mail::to($event->product->orders->email)->send(new LowInventoryMail($event->product));
     }
 }

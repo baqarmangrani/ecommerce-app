@@ -17,7 +17,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $products = $this->productRepository->all(null, $request); // Disable pagination for API
+        $products = $this->productRepository->all(null, $request); 
         return response()->json($products);
     }
 }

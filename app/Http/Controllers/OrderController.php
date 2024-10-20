@@ -33,7 +33,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = $this->orderRepository->all(10); // Paginate with 10 items per page
+        $orders = $this->orderRepository->all(10); 
         return view('orders.index', compact('orders'));
     }
 

@@ -58,7 +58,7 @@ class OrderRepository implements OrderRepositoryInterface
         foreach ($orderItems as $item) {
             OrderItem::create([
                 'order_id' => $orderId,
-                'product_id' => $item['product_id'], // Corrected key
+                'product_id' => $item['product_id'], 
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
             ]);
