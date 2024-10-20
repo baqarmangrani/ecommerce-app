@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    private $productRepository;
-    private $categoryRepository;
+    protected $productRepository;
+    protected $categoryRepository;
 
     public function __construct(ProductRepositoryInterface $productRepository, CategoryRepositoryInterface $categoryRepository)
     {
@@ -17,9 +17,9 @@ class ProductController extends Controller
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $products = $this->productRepository->all(10);
+        $products = $this->productRepository->all(10, $request); // Enable pagination for UI
         return view('products.index', compact('products'));
     }
 

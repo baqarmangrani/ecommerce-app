@@ -2,11 +2,11 @@
 
 namespace App\Repositories\Product;
 
-use App\Models\Product;
+use Illuminate\Http\Request;
 
 interface ProductRepositoryInterface
 {
-    public function all($paginate = null);
+    public function all($paginate = null, Request $request = null);
     public function find($id);
     public function create(array $data);
     public function update($id, array $data);

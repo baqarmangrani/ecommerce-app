@@ -4,17 +4,10 @@ namespace App\Repositories\Product;
 
 use App\Models\InventoryLog;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function all($paginate = null)
-    {
-        if ($paginate) {
-            return Product::paginate($paginate);
-        }
-        return Product::all();
-    }
-
     public function find($id)
     {
         return Product::findOrFail($id);
@@ -80,5 +73,27 @@ class ProductRepository implements ProductRepositoryInterface
         ]);
 
         return $product;
+    }
+
+    public function all($paginate = null, Request $request = null)
+    {
+        $query = Product::query();
+
+        // Filtering
+        if ($request && $request->has('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        // Searching
+        if ($request && $request->has('search')) {
+            $query->where('name', 'like', '%' . $request->input('search') . '%');
+        }
+
+        // Pagination
+        if ($paginate) {
+            return $query->paginate($paginate);
+        }
+
+        return $query->get();
     }
 }
