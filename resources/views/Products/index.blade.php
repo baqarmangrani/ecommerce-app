@@ -35,7 +35,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($products as $product)
+                            @foreach ($paginatedProducts as $product)
                                 <tr>
                                     <td class="py-2">{{ $product->name }}</td>
                                     <td class="py-2">{{ $product->description }}</td>
@@ -50,7 +50,7 @@
                         </tbody>
                     </table>
                     <div class="mt-4">
-                        {{ $products->links() }}
+                        {{ $paginatedProducts->links() }}
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
                                         <select id="product_id" name="product_id"
                                             class="w-full border-gray-300 rounded-md shadow-sm" required>
                                             <option value="">Select a product</option>
-                                            @foreach ($products as $product)
+                                            @foreach ($allProducts as $product)
                                                 <option value="{{ $product->id }}"
                                                     data-quantity="{{ $product->quantity }}">{{ $product->name }}
                                                 </option>

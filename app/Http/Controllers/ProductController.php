@@ -19,8 +19,11 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $products = $this->productRepository->all(10, $request); // Enable pagination for UI
-        return view('products.index', compact('products'));
+        $paginatedProducts = $this->productRepository->all(10, $request);
+
+        $allProducts = $this->productRepository->all();
+
+        return view('products.index', compact('paginatedProducts', 'allProducts'));
     }
 
     public function create()
