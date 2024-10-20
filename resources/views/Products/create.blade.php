@@ -26,6 +26,11 @@
                                 class="w-full border-gray-300 rounded-md shadow-sm" required>
                         </div>
                         <div class="mb-4">
+                            <label for="quantity" class="block text-gray-700">Quantity</label>
+                            <input type="number" name="quantity" id="price"
+                                class="w-full border-gray-300 rounded-md shadow-sm" required>
+                        </div>
+                        <div class="mb-4">
                             <label for="category_id" class="block text-gray-700">Category</label>
                             <select name="category_id" id="category_id"
                                 class="w-full border-gray-300 rounded-md shadow-sm" required>

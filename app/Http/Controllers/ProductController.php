@@ -71,10 +71,11 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'quantity' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
-        $this->productRepository->create($data);
-        return redirect()->route('products.index');
+        $this->productRepository->create($request->all());
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
     public function restock(Request $request, $id)
