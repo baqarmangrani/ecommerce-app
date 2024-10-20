@@ -29,19 +29,16 @@ class ProcessOrder implements ShouldQueue
     public function handle(OrderRepositoryInterface $orderRepository, ProductRepositoryInterface $productRepository)
     {
         try {
-            $order = $this->order;
-            $orderItems = $this->orderItems;
+            $orderRepository->attachOrderItems($this->order->id, $this->orderItems);
 
-            $orderRepository->attachOrderItems($order->id, $orderItems);
-
-            foreach ($orderItems as $item) {
+            foreach ($this->orderItems as $item) {
                 $productRepository->reduceStock($item['product_id'], $item['quantity']);
             }
 
-            event(new OrderPlaced($order));
+            event(new OrderPlaced($this->order));
         } catch (\Exception $e) {
 
-            event(new OrderFailed($order, $e));
+            event(new OrderFailed($this->order, $e));
         }
     }
 }
