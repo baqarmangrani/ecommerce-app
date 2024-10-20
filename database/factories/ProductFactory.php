@@ -19,6 +19,7 @@ class ProductFactory extends Factory
             'description' => $this->faker->realText(100),
             'price' => $this->faker->randomFloat(2, 1, 100),
             'category_id' => \App\Models\Category::factory(),
+            'quantity' => $this->faker->numberBetween(0, 100)
         ];
     }
 }
