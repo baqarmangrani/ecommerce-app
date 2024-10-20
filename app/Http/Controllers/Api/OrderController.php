@@ -24,7 +24,6 @@ class OrderController extends Controller
         $this->orderRepository = $orderRepository;
         $this->productRepository = $productRepository;
         $this->paymentService = $paymentService;
-
     }
 
     public function store(Request $request)
@@ -53,7 +52,6 @@ class OrderController extends Controller
 
             if ($request->has('discount')) {
                 $discount = $request->discount;
-                dd($discount);
                 if ($discount->type == 'percentage') {
                     $productPrice -= ($productPrice * ($discount->value / 100));
                 } else {
@@ -90,7 +88,6 @@ class OrderController extends Controller
         ];
 
         $order = $this->orderRepository->create($orderData);
-
         ProcessOrder::dispatch($order, $orderItems);
 
         return response()->json(['success' => 'Order placed successfully. Your order number is ' . $order->order_number], 201);

@@ -28,7 +28,6 @@ class OrderController extends Controller
         $this->userRepository = $userRepository;
         $this->productRepository = $productRepository;
         $this->paymentService = $paymentService;
-
     }
 
     public function index()
@@ -71,7 +70,6 @@ class OrderController extends Controller
 
             if ($request->has('discount')) {
                 $discount = $request->discount;
-                dd($discount);
                 if ($discount->type == 'percentage') {
                     $productPrice -= ($productPrice * ($discount->value / 100));
                 } else {
