@@ -7,6 +7,7 @@ use App\Models\User;
 
 interface UserRepositoryInterface
 {
+    public function all($paginate = null);
     public function find($id): ?User;
     public function findByEmail($email): ?User;
     public function create(array $data): User;

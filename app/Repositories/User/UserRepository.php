@@ -2,11 +2,18 @@
 
 namespace App\Repositories\User;
 
-use App\Models\Product;
 use App\Models\User;
 
 class UserRepository implements UserRepositoryInterface
 {
+    public function all($paginate = null)
+    {
+        if ($paginate) {
+            return User::paginate($paginate);
+        }
+        return User::all();
+    }
+
     public function find($id): ?User
     {
         return User::find($id);

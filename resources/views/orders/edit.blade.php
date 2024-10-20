@@ -13,15 +13,26 @@
                         @csrf
                         @method('PUT')
                         <div class="mb-4">
-                            <label for="customer_name" class="block text-gray-700">Customer Name</label>
-                            <input type="text" name="customer_name" id="customer_name"
-                                class="w-full border-gray-300 rounded-md shadow-sm" value="{{ $order->customer_name }}"
+                            <label for="order_number" class="block text-gray-700">Order Number</label>
+                            <input type="text" name="order_number" id="order_number"
+                                class="w-full border-gray-300 rounded-md shadow-sm" value="{{ $order->order_number }}"
                                 required>
                         </div>
                         <div class="mb-4">
-                            <label for="total" class="block text-gray-700">Total</label>
-                            <input type="number" name="total" id="total"
-                                class="w-full border-gray-300 rounded-md shadow-sm" value="{{ $order->total }}"
+                            <label for="user_id" class="block text-gray-700">Customer</label>
+                            <select name="user_id" id="user_id" class="w-full border-gray-300 rounded-md shadow-sm"
+                                required>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}"
+                                        {{ $order->user_id == $user->id ? 'selected' : '' }}>{{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="total_price" class="block text-gray-700">Total Price</label>
+                            <input type="number" name="total_price" id="total_price"
+                                class="w-full border-gray-300 rounded-md shadow-sm" value="{{ $order->total_price }}"
                                 required>
                         </div>
                         <div class="mb-4">
@@ -34,6 +45,30 @@
                                     Completed</option>
                                 <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>
                                     Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="payment_status" class="block text-gray-700">Payment Status</label>
+                            <select name="payment_status" id="payment_status"
+                                class="w-full border-gray-300 rounded-md shadow-sm" required>
+                                <option value="paid" {{ $order->payment_status == 'paid' ? 'selected' : '' }}>Paid
+                                </option>
+                                <option value="unpaid" {{ $order->payment_status == 'unpaid' ? 'selected' : '' }}>
+                                    Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="payment_method" class="block text-gray-700">Payment Method</label>
+                            <select name="payment_method" id="payment_method"
+                                class="w-full border-gray-300 rounded-md shadow-sm" required>
+                                <option value="credit_card"
+                                    {{ $order->payment_method == 'credit_card' ? 'selected' : '' }}>Credit Card
+                                </option>
+                                <option value="paypal" {{ $order->payment_method == 'paypal' ? 'selected' : '' }}>
+                                    PayPal</option>
+                                <option value="bank_transfer"
+                                    {{ $order->payment_method == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer
+                                </option>
                             </select>
                         </div>
                         <button type="submit"

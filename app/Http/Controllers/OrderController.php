@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Order\OrderRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     protected $orderRepository;
+    protected $userRepository;
 
-    public function __construct(OrderRepositoryInterface $orderRepository)
-    {
+    public function __construct(
+        OrderRepositoryInterface $orderRepository,
+        UserRepositoryInterface $userRepository
+    ) {
         $this->orderRepository = $orderRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function index()
@@ -45,7 +50,8 @@ class OrderController extends Controller
     public function edit($id)
     {
         $order = $this->orderRepository->find($id);
-        return view('orders.edit', compact('order'));
+        $users = $this->userRepository->all();
+        return view('orders.edit', compact('order', 'users'));
     }
 
     public function update(Request $request, $id)
